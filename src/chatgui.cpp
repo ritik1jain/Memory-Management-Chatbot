@@ -37,6 +37,8 @@ ChatBotFrame::ChatBotFrame(const wxString &title) : wxFrame(NULL, wxID_ANY, titl
     // create text control for user input
     int idTextXtrl = 1;
     _userTextCtrl = new wxTextCtrl(ctrlPanel, idTextXtrl, "", wxDefaultPosition, wxSize(width, 50), wxTE_PROCESS_ENTER, wxDefaultValidator, wxTextCtrlNameStr);
+    _userTextCtrl->SetBackgroundStyle( wxBG_STYLE_COLOUR );
+    _userTextCtrl->SetBackgroundColour( *wxLIGHT_GREY );
     Connect(idTextXtrl, wxEVT_TEXT_ENTER, wxCommandEventHandler(ChatBotFrame::OnEnter));
 
     // create vertical sizer for panel alignment and add panels
@@ -114,31 +116,22 @@ ChatBotPanelDialog::ChatBotPanelDialog(wxWindow *parent, wxWindowID id)
     // allow for PNG images to be handled
     wxInitAllImageHandlers();
 
-    //// STUDENT CODE
-    ////
-
     // create chat logic instance
-    _chatLogic = new ChatLogic(); 
+    _chatLogic = std::make_unique<ChatLogic>();
 
     // pass pointer to chatbot dialog so answers can be displayed in GUI
     _chatLogic->SetPanelDialogHandle(this);
 
     // load answer graph from file
-    _chatLogic->LoadAnswerGraphFromFile(dataPath + "src/answergraph.txt");
-
-    ////
-    //// EOF STUDENT CODE
+    _chatLogic->LoadAnswerGraphFromFile(dataPath + "answergraph.txt");
 }
 
 ChatBotPanelDialog::~ChatBotPanelDialog()
 {
-    //// STUDENT CODE
-    ////
-
-    delete _chatLogic;
-
-    ////
-    //// EOF STUDENT CODE
+    /* 
+     * No need to deallocate memory for _chatlogic
+     * since _chatLogic is now a smart pointer created on stack.
+     */
 }
 
 void ChatBotPanelDialog::AddDialogItem(wxString text, bool isFromUser)
